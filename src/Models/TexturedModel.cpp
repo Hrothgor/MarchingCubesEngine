@@ -7,9 +7,20 @@
 
 #include "TexturedModel.hpp"
 
-IS::TexturedModel::TexturedModel(const RawModel &model, sf::Texture &texture, float shineDamper, float reflectivity)
+IS::TexturedModel::TexturedModel(const RawModel &model, float shineDamper, float reflectivity)
+    : RawModel(model)
 {
-    _rawModel = model;
+    sf::Image image;
+    image.create(1, 1, sf::Color::White);
+    _texture = new sf::Texture();
+    _texture->loadFromImage(image);
+    _shineDamper = shineDamper;
+    _reflectivity = reflectivity;
+}
+
+IS::TexturedModel::TexturedModel(const RawModel &model, sf::Texture &texture, float shineDamper, float reflectivity)
+    : RawModel(model)
+{
     _texture = &texture;
     _shineDamper = shineDamper;
     _reflectivity = reflectivity;
@@ -17,11 +28,6 @@ IS::TexturedModel::TexturedModel(const RawModel &model, sf::Texture &texture, fl
 
 IS::TexturedModel::~TexturedModel()
 {
-}
-
-IS::RawModel IS::TexturedModel::getModel() const
-{
-    return (_rawModel);
 }
 
 sf::Texture *IS::TexturedModel::getTexture()
@@ -51,14 +57,14 @@ void IS::TexturedModel::setReflectivity(float reflectivity)
 
 bool IS::TexturedModel::operator==(const TexturedModel &model) const
 {
-    if (this->getModel().getVao() == model.getModel().getVao())
+    if (getVao() == model.getVao())
         return (true);
     return (false);
 }
 
 bool IS::TexturedModel::operator<(const TexturedModel &model) const
 {
-    if (this->getModel().getVao() == model.getModel().getVao())
+    if (getVao() == model.getVao())
         return (false);
     return (true);
 }

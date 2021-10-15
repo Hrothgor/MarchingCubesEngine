@@ -13,6 +13,12 @@ IS::RawModel::RawModel(int vao, int vertexCount)
     _vertexCount = vertexCount;
 }
 
+IS::RawModel::RawModel(const RawModel &model)
+{
+    _vao = model.getVao();
+    _vertexCount = model.getVertexCount();
+}
+
 IS::RawModel::~RawModel()
 {
 }

@@ -8,7 +8,7 @@
 #include "Camera.hpp"
 
 IS::Camera::Camera()
-    : _position(25, 0, 200)
+    : _position(0, 0, 0)
 {
     _pitch = 0;
     _yaw = 0;

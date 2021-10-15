@@ -13,6 +13,7 @@
 namespace IS {
     class Light {
         public:
+            Light() {};
             Light(sf::Vector3f position, sf::Vector3f color);
             ~Light();
 

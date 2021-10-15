@@ -27,6 +27,7 @@ IS::DisplayManager::~DisplayManager()
 void IS::DisplayManager::load()
 {
     GLOBAL::loader = new Loader;
+
     GLOBAL::noise = new FastNoiseLite;
     GLOBAL::noise->SetNoiseType(FastNoiseLite::NoiseType::NoiseType_Perlin);
     GLOBAL::noise->SetFrequency(0.01);
@@ -72,6 +73,11 @@ void IS::DisplayManager::run()
     ///// 3D INIT /////
     Master3DRenderer _renderer;
 
+    RawModel modelDragon = OBJLoader::loadObjModel("ressources/dragon.obj");
+    TexturedModel texturedModelDragon(modelDragon);
+    Entity *entity = new Entity(texturedModelDragon, sf::Vector3f(0,0,0), sf::Vector3f(0,0,0), 1);
+    _renderer.addEntity(entity);
+
     // int MeshSize = 500;
     // std::vector<IS::ScalarPoint> mcPoints;
 	// for(float x=0; x < MeshSize; x++)
@@ -84,44 +90,47 @@ void IS::DisplayManager::run()
 	// 			mcPoints.push_back(vert);
 	// } 
 
-    for (int i = 0; i < CHUNK_MAX; i++) {
-        for (int j = 0; j < CHUNK_MAX; j++) {
-            std::vector<IS::ScalarPoint> mcPoints;
-            sf::Vector3i coord(i * CHUNK_SIZE, 0, j * CHUNK_SIZE);
-            Chunk chunk(coord, CHUNK_SIZE);
-            for(float x=0; x < CHUNK_SIZE; x++)
-                for(float y=0; y < CHUNK_SIZE; y++)
-                    for(float z=0; z < CHUNK_SIZE; z++) {
-                        IS::ScalarPoint vert;
-                        vert.pos = {x, y, z};
-                        vert.value = GLOBAL::noise->GetNoise(x, y, z);
-                        mcPoints.push_back(vert);
-            }
-            chunk.setScalarPoints(mcPoints);
-            chunk.generateChunk();
-            GLOBAL::chunks->push_back(chunk);
-        }
-    }
+    // for (int i = 0; i < CHUNK_MAX; i++) {
+    //     for (int j = 0; j < CHUNK_MAX; j++) {
+    //         std::vector<IS::ScalarPoint> mcPoints;
+    //         sf::Vector3i coord(i * CHUNK_SIZE, 0, j * CHUNK_SIZE);
+    //         Chunk chunk(coord, CHUNK_SIZE);
+    //         for(float x=0; x < CHUNK_SIZE; x++)
+    //             for(float y=0; y < CHUNK_SIZE; y++)
+    //                 for(float z=0; z < CHUNK_SIZE; z++) {
+    //                     IS::ScalarPoint vert;
+    //                     vert.pos = {x, y, z};
+    //                     vert.value = GLOBAL::noise->GetNoise(x, y, z);
+    //                     mcPoints.push_back(vert);
+    //         }
+    //         chunk.setScalarPoints(mcPoints);
+    //         chunk.generateChunk();
+    //         GLOBAL::chunks->push_back(chunk);
+    //     }
+    // }
     sf::Clock clock1;
 
-    int MeshSize = 500;
-    std::vector<IS::ScalarPoint> mcPoints;
-    for(float x=0; x < MeshSize; x++)
-        for(float y=0; y < MeshSize; y++)
-            for(float z=0; z < MeshSize; z++) {
-                IS::ScalarPoint vert;
-                vert.pos = {x, y, z};
-                vert.value = GLOBAL::noise->GetNoise(x, y, z);
-                mcPoints.push_back(vert);
-    }
-    MarchingCubes MC(MeshSize, 0);
-    RawModel mesh = MC.loadMarchingCubesModel({0,0,0}, mcPoints);
+    // int MeshSize = 500;
+    // std::vector<IS::ScalarPoint> mcPoints;
+    // for(float x=0; x < MeshSize; x++)
+    //     for(float y=0; y < MeshSize; y++)
+    //         for(float z=0; z < MeshSize; z++) {
+    //             IS::ScalarPoint vert;
+    //             vert.pos = {x, y, z};
+    //             vert.value = GLOBAL::noise->GetNoise(x, y, z);
+    //             mcPoints.push_back(vert);
+    // }
+    // MarchingCubes MC(MeshSize, 0);
+    // RawModel mesh = MC.loadMarchingCubesModel({0,0,0}, mcPoints);
+    RawModel mesh;
 
     sf::Time elapsed1 = clock1.getElapsedTime();
     std::cout << elapsed1.asSeconds() << std::endl;
 
     float angle = 0;
     Light light(sf::Vector3f(0,2000,3000), sf::Vector3f(1,1,1));
+    _renderer.addLight(light);
+
     Camera camera;
     ///////////////////
 
@@ -142,10 +151,12 @@ void IS::DisplayManager::run()
         angle += 0.005;
         light.setPosition({sinf(angle) * 3000, 0, cosf(angle) * 3000});
 
+        //// 3D ////
         camera.move(_keysSmooth, _window);
-        _renderer.render(light, camera, mesh);
+        _renderer.render(camera, mesh);
+        ///////////
 
-        //// GUI ////
+        //// 2D ////
         _window->pushGLStates();
 
         nbFrame++;
@@ -158,7 +169,7 @@ void IS::DisplayManager::run()
         _window->draw(text);
 
         _window->popGLStates();
-        /////////////
+        ////////////
 
         _window->display();
     }

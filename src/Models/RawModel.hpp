@@ -15,6 +15,7 @@ namespace IS {
         public:
             RawModel() {};
             RawModel(int vao, int vertexCount);
+            RawModel(const RawModel &model);
             ~RawModel();
 
             int getVao() const;
