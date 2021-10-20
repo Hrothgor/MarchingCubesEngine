@@ -9,22 +9,37 @@
 #define RAWMODEL_HPP_
 
 #include "../global.hpp"
+#include "Mesh.hpp"
 
 namespace IS {
+    struct Material {
+        std::string name = "default";
+        sf::Vector3f Ka = {0, 0, 0};
+    };
+
     class RawModel {
         public:
             RawModel() {};
-            RawModel(int vao, int vertexCount);
-            RawModel(const RawModel &model);
+            RawModel(std::vector<Mesh> meshs, std::vector<Material> mats);
+            RawModel(RawMesh mesh);
             ~RawModel();
 
-            int getVao() const;
-            int getVertexCount() const;
+            void changeAmbientColor(int i, sf::Vector3f value);
+
+            std::vector<Mesh> getMeshs() const;
+            std::vector<Material> getMaterials() const;
+            Material getMaterials(int i) const;
+
+            void setMeshs(std::vector<Mesh> meshs);
+            void setMaterials(std::vector<Material> mats);
+
+            void addMesh(Mesh mesh);
+            void addMaterial(Material mat);
 
         protected:
         private:
-            int _vao = -1;
-            int _vertexCount = 0;
+            std::vector<Mesh> _meshs;
+            std::vector<Material> _materials;
     };
 }
 

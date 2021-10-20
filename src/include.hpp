@@ -13,8 +13,6 @@
 #define FOV 70.0
 #define NEAR_PLANE 0.1
 #define FAR_PLANE 2000.0
-#define CHUNK_MAX 10
-#define CHUNK_SIZE 50
 
 #include <string>
 #include <iostream>
@@ -24,6 +22,7 @@
 #include <regex>
 #include <unordered_map>
 #include <map>
+#include <filesystem>
 
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>

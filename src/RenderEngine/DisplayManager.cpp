@@ -24,16 +24,6 @@ IS::DisplayManager::~DisplayManager()
 {
 }
 
-void IS::DisplayManager::load()
-{
-    GLOBAL::loader = new Loader;
-
-    GLOBAL::noise = new FastNoiseLite;
-    GLOBAL::noise->SetNoiseType(FastNoiseLite::NoiseType::NoiseType_Perlin);
-    GLOBAL::noise->SetFrequency(0.01);
-    GLOBAL::noise->SetSeed(rand());
-}
-
 void IS::DisplayManager::event()
 {
     sf::Event event;
@@ -42,11 +32,11 @@ void IS::DisplayManager::event()
         _keysRough[i] = false;
     while (_window->pollEvent(event))
     {
-        if (event.type == sf::Event::KeyPressed) {
+        if (event.type == sf::Event::KeyPressed && event.key.code != -1) {
             _keysRough[event.key.code] = true;
             _keysSmooth[event.key.code] = true;
         }
-        if (event.type == sf::Event::KeyReleased)
+        if (event.type == sf::Event::KeyReleased && event.key.code != -1)
             _keysSmooth[event.key.code] = false;
 
         if (event.type == sf::Event::MouseButtonPressed) {
@@ -67,69 +57,110 @@ void IS::DisplayManager::event()
     }
 }
 
+void IS::DisplayManager::load()
+{
+    GLOBAL::_loader = new Loader;
+
+    GLOBAL::_noise = new FastNoiseLite;
+    GLOBAL::_noise->SetNoiseType(FastNoiseLite::NoiseType::NoiseType_Perlin);
+    GLOBAL::_noise->SetFrequency(0.01);
+    GLOBAL::_noise->SetSeed(rand());
+}
+
 void IS::DisplayManager::run()
 {
     load();
     ///// 3D INIT /////
-    Master3DRenderer _renderer;
+    Master3DRenderer _3Drenderer;
 
-    RawModel modelDragon = OBJLoader::loadObjModel("ressources/dragon.obj");
-    TexturedModel texturedModelDragon(modelDragon);
+    TexturedModel texturedModelDragon("bomberman");
     Entity *entity = new Entity(texturedModelDragon, sf::Vector3f(0,0,0), sf::Vector3f(0,0,0), 1);
-    _renderer.addEntity(entity);
+    _3Drenderer.add(entity);
+    
+    _3Drenderer.add(Light({0, 2000, 3000}, {1, 1, 1}));
 
-    // int MeshSize = 500;
-    // std::vector<IS::ScalarPoint> mcPoints;
-	// for(float x=0; x < MeshSize; x++)
-	// 	for(float y=0; y < MeshSize; y++)
-	// 		for(float z=0; z < MeshSize; z++) {
-    //             float distance = sqrt((x - (MeshSize / 2 - 1))*(x - (MeshSize / 2 - 1)) + (y - (MeshSize / 2 - 1))*(y - (MeshSize / 2 - 1)) + (z - (MeshSize / 2 - 1))*(z - (MeshSize / 2 - 1)));
-	// 			IS::ScalarPoint vert;
-    //             vert.pos = {x, y, z};
-	// 			vert.value = (MeshSize / 2) - (MeshSize / 10) - distance;
-	// 			mcPoints.push_back(vert);
-	// } 
+    sf::Clock clock1;
+    
+    int chunkMax = 4;
+    int chunkSize = 20;
 
-    // for (int i = 0; i < CHUNK_MAX; i++) {
-    //     for (int j = 0; j < CHUNK_MAX; j++) {
-    //         std::vector<IS::ScalarPoint> mcPoints;
-    //         sf::Vector3i coord(i * CHUNK_SIZE, 0, j * CHUNK_SIZE);
-    //         Chunk chunk(coord, CHUNK_SIZE);
-    //         for(float x=0; x < CHUNK_SIZE; x++)
-    //             for(float y=0; y < CHUNK_SIZE; y++)
-    //                 for(float z=0; z < CHUNK_SIZE; z++) {
-    //                     IS::ScalarPoint vert;
-    //                     vert.pos = {x, y, z};
-    //                     vert.value = GLOBAL::noise->GetNoise(x, y, z);
-    //                     mcPoints.push_back(vert);
+    int textureSize = chunkMax * chunkSize;
+    int planetSize = textureSize / 3;
+
+    int i = 0;
+    for (int i = 0; i < chunkMax; i++) {
+        for (int j = 0; j < chunkMax; j++) {
+            for (int k = 0; k < chunkMax; k++) {
+                std::vector<IS::ScalarPoint> mcPoints;
+                sf::Vector3i coord(i * chunkSize, j * chunkSize, k * chunkSize);
+                Chunk *chunk = new Chunk(coord, chunkSize + 1);
+                for(float x=0; x < chunkSize + 1; x++)
+                    for(float y=0; y < chunkSize + 1; y++)
+                        for(float z=0; z < chunkSize + 1; z++) {
+                            IS::ScalarPoint vert;
+                            vert.pos = {x, y, z};
+                            sf::Vector3f worldPos = {vert.pos.x + coord.x, vert.pos.y + coord.y, vert.pos.z + coord.z};
+                            if (worldPos.x == 0 || worldPos.y == 0 || worldPos.z == 0 ||
+                                worldPos.x == textureSize - 1 || worldPos.y == textureSize - 1 || worldPos.z == textureSize - 1) {
+                                vert.value = 1;
+                                mcPoints.push_back(vert);
+                                continue;
+                            }
+                            float distance = sqrt((worldPos.x - (textureSize / 2 - 1))*(worldPos.x - (textureSize / 2 - 1)) + (worldPos.y - (textureSize / 2 - 1))*(worldPos.y - (textureSize / 2 - 1)) + (worldPos.z - (textureSize / 2 - 1))*(worldPos.z - (textureSize / 2 - 1)));
+                            float mapValue = distance - planetSize;
+                            
+                            float freq = 2;
+                            float amplitude = 30;
+
+                            for (int i = 0; i < 6; i++) {
+                                mapValue += GLOBAL::_noise->GetNoise(worldPos.x * freq, worldPos.y * freq, worldPos.z * freq) * amplitude;
+                                amplitude *= 0.5;
+                                freq *= 2;
+                            }
+
+                            vert.value = mapValue;
+                            mcPoints.push_back(vert);
+                }
+                chunk->setScalarPoints(mcPoints);
+                chunk->generateChunk();
+                RawModel tmp = chunk->getModel();
+                tmp.changeAmbientColor(0, {((float) rand() / (RAND_MAX)), ((float) rand() / (RAND_MAX)), ((float) rand() / (RAND_MAX))});
+                chunk->setModel(tmp);
+                _3Drenderer.add(chunk);
+            }
+        }
+    }
+
+    // for (int i = 0; i < chunkMax; i++) {
+    //     for (int j = 0; j < chunkMax; j++) {
+    //         for (int k = 0; k < chunkMax; k++) {
+    //             std::vector<IS::ScalarPoint> mcPoints;
+    //             sf::Vector3i coord(i * chunkSize, j * chunkSize, k * chunkSize);
+    //             Chunk *chunk = new Chunk(coord, chunkSize + 1);
+    //             for(float x=0; x < chunkSize + 1; x++)
+    //                 for(float y=0; y < chunkSize + 1; y++)
+    //                     for(float z=0; z < chunkSize + 1; z++) {
+    //                         float distance = sqrt((x - (chunkSize / 2 - 1))*(x - (chunkSize / 2 - 1)) + (y - (chunkSize / 2 - 1))*(y - (chunkSize / 2 - 1)) + (z - (chunkSize / 2 - 1))*(z - (chunkSize / 2 - 1)));
+    //                         IS::ScalarPoint vert;
+    //                         vert.pos = {x, y, z};
+    //                         vert.value = (chunkSize / 2) - (chunkSize / 10) - distance;
+    //                         // IS::ScalarPoint vert;
+    //                         // vert.pos = {x, y, z};
+    //                         // vert.value = GLOBAL::noise->GetNoise(coord.x + x, coord.y + y, coord.z + z);
+    //                         mcPoints.push_back(vert);
+    //             }
+    //             chunk->setScalarPoints(mcPoints);
+    //             chunk->generateChunk();
+    //             RawModel tmp = chunk->getModel();
+    //             tmp.changeAmbientColor(0, {((float) rand() / (RAND_MAX)), ((float) rand() / (RAND_MAX)), ((float) rand() / (RAND_MAX))});
+    //             chunk->setModel(tmp);
+    //             _3Drenderer.add(chunk);
     //         }
-    //         chunk.setScalarPoints(mcPoints);
-    //         chunk.generateChunk();
-    //         GLOBAL::chunks->push_back(chunk);
     //     }
     // }
-    sf::Clock clock1;
-
-    // int MeshSize = 500;
-    // std::vector<IS::ScalarPoint> mcPoints;
-    // for(float x=0; x < MeshSize; x++)
-    //     for(float y=0; y < MeshSize; y++)
-    //         for(float z=0; z < MeshSize; z++) {
-    //             IS::ScalarPoint vert;
-    //             vert.pos = {x, y, z};
-    //             vert.value = GLOBAL::noise->GetNoise(x, y, z);
-    //             mcPoints.push_back(vert);
-    // }
-    // MarchingCubes MC(MeshSize, 0);
-    // RawModel mesh = MC.loadMarchingCubesModel({0,0,0}, mcPoints);
-    RawModel mesh;
 
     sf::Time elapsed1 = clock1.getElapsedTime();
     std::cout << elapsed1.asSeconds() << std::endl;
-
-    float angle = 0;
-    Light light(sf::Vector3f(0,2000,3000), sf::Vector3f(1,1,1));
-    _renderer.addLight(light);
 
     Camera camera;
     ///////////////////
@@ -148,12 +179,9 @@ void IS::DisplayManager::run()
     {
         event();
 
-        angle += 0.005;
-        light.setPosition({sinf(angle) * 3000, 0, cosf(angle) * 3000});
-
         //// 3D ////
         camera.move(_keysSmooth, _window);
-        _renderer.render(camera, mesh);
+        _3Drenderer.render(camera);
         ///////////
 
         //// 2D ////
@@ -176,6 +204,6 @@ void IS::DisplayManager::run()
     delete _window;
     _keysRough.clear();
     _keysSmooth.clear();
-    _renderer.destroy();
-    GLOBAL::loader->destroy();
+    _3Drenderer.destroy();
+    GLOBAL::_loader->destroy();
 }

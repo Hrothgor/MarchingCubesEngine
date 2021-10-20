@@ -21,8 +21,10 @@ IS::Chunk::~Chunk()
 
 void IS::Chunk::generateChunk()
 {
-    if (_points.size() != 0)
-        _model = _MC.loadMarchingCubesModel(_id, _points);
+    if (_points.size() != 0) {
+        _model = _MC.loadMarchingCubesModel(_points);
+        _model.changeAmbientColor(0, {1, 0.75, 0.80});
+    }
 }
 
 std::vector<IS::ScalarPoint> IS::Chunk::getScalarPoints() const
@@ -49,3 +51,12 @@ sf::Vector3i IS::Chunk::getCoord() const
 {
     return (_id);
 }
+
+bool IS::Chunk::update()
+{
+    if (_regenerate == true) {
+
+    }
+    _regenerate = false;
+    return (true);
+} 

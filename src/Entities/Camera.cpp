@@ -8,7 +8,7 @@
 #include "Camera.hpp"
 
 IS::Camera::Camera()
-    : _position(0, 0, 0)
+    : _position(0, 50, 50)
 {
     _pitch = 0;
     _yaw = 0;
@@ -30,17 +30,17 @@ void IS::Camera::move(std::vector<bool> keys, sf::RenderWindow *window)
     sf::Mouse::setPosition({(int)(window->getSize().x / 2), (int)(window->getSize().y / 2)}, *window);
 
     if (keys[Input::Z])
-        _position.z -= 5;
+        _position.z -= 0.2;
     if (keys[Input::S])
-        _position.z += 5;
+        _position.z += 0.2;
     if (keys[Input::Q])
-        _position.x -= 5;
+        _position.x -= 0.2;
     if (keys[Input::D])
-        _position.x += 5;
+        _position.x += 0.2;
     if (keys[Input::Space])
-        _position.y += 5;
+        _position.y += 0.2;
     if (keys[Input::LShift])
-        _position.y -= 5;
+        _position.y -= 0.2;
 }
 
 sf::Vector3f IS::Camera::getPosition() const

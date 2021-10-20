@@ -17,14 +17,16 @@ namespace IS {
             Chunk(sf::Vector3i coord, int _size);
             ~Chunk();
 
+            bool update();
+
             void generateChunk();
 
             std::vector<ScalarPoint> getScalarPoints() const;
-            void setScalarPoints(std::vector<ScalarPoint> scalarpoints);
             RawModel getModel() const;
-            void setModel(RawModel model);
             sf::Vector3i getCoord() const;
 
+            void setScalarPoints(std::vector<ScalarPoint> scalarpoints);
+            void setModel(RawModel model);
         protected:
         private:
             int _size;
@@ -33,6 +35,8 @@ namespace IS {
             std::vector<ScalarPoint> _points;
             MarchingCubes _MC;
             RawModel _model;
+
+            bool _regenerate = false;
     };
 }
 

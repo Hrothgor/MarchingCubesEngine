@@ -48,9 +48,9 @@ void IS::MarchingCubes::pushVertex(sf::Vector3f pos1, sf::Vector3f pos2, sf::Vec
     if (it != _vertexIndexMap.end()) {
         _indices.push_back(it->second);
     } else {
-        _vertices.push_back(vertex.x + _coord.x);
-        _vertices.push_back(vertex.y + _coord.y);
-        _vertices.push_back(vertex.z + _coord.z);
+        _vertices.push_back(vertex.x);
+        _vertices.push_back(vertex.y);
+        _vertices.push_back(vertex.z);
         _normals.push_back(normal.x);
         _normals.push_back(normal.y);
         _normals.push_back(normal.z);
@@ -59,10 +59,9 @@ void IS::MarchingCubes::pushVertex(sf::Vector3f pos1, sf::Vector3f pos2, sf::Vec
     }
 }
 
-IS::RawModel IS::MarchingCubes::loadMarchingCubesModel(sf::Vector3i coord, std::vector<ScalarPoint> points)
+IS::RawModel IS::MarchingCubes::loadMarchingCubesModel(std::vector<ScalarPoint> points)
 {
     int YtimeZ = (_sizeY)*(_sizeZ);
-    _coord = coord;
     
     for(int z = 0; z < _sizeZ - 1; z++)
         for(int y = 0; y < _sizeY - 1; y++)
@@ -110,5 +109,5 @@ IS::RawModel IS::MarchingCubes::loadMarchingCubesModel(sf::Vector3i coord, std::
                     pushVertex(cubeVertices[c0].pos, cubeVertices[c1].pos, vertexC, normal);
                 }
             }
-    return (GLOBAL::loader->LoadToVAO(_vertices, _normals, _indices));
+    return ModelLoader::loadModel(_vertices, _normals, _indices);
 }

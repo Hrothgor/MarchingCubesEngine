@@ -12,9 +12,8 @@
 #include "Master3DRenderer.hpp"
 #include "../Entities/Camera.hpp"
 #include "../Entities/Light.hpp"
-#include "../MarchingCubes/MarchingCubes.hpp"
-#include "../Models/OBJLoader.hpp"
-#include "Loader.hpp"
+
+#include "../Models/Loader.hpp"
 #include "../Chunk/Chunk.hpp"
 
 namespace IS {

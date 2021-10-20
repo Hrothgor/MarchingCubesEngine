@@ -9,17 +9,21 @@
 #define MARCHINGCUBES_HPP_
 
 #include "../global.hpp"
-#include "../Models/RawModel.hpp"
-#include "../RenderEngine/Loader.hpp"
 #include "MarchingCubesTables.hpp"
+#include "../Models/ModelLoader.hpp"
 
 namespace IS {
+    struct ScalarPoint {
+        sf::Vector3f pos;
+        float value;
+    };
+
     class MarchingCubes {
         public:
             MarchingCubes(int size = 0, float minValue = 0);
             ~MarchingCubes();
 
-            RawModel loadMarchingCubesModel(sf::Vector3i coord, std::vector<ScalarPoint> points);
+            RawModel loadMarchingCubesModel(std::vector<ScalarPoint> points);
 
         protected:
         private:
@@ -36,7 +40,6 @@ namespace IS {
             int _sizeY;
             int _sizeZ;
             float _isoValue;
-            sf::Vector3i _coord;
     };
 }
 

@@ -9,7 +9,8 @@
 #define MASTER3DRENDERER_HPP_
 
 #include "../global.hpp"
-#include "Renderer.hpp"
+#include "Entity3DRenderer.hpp"
+#include "Terrain3DRenderer.hpp"
 
 namespace IS {
     class Master3DRenderer {
@@ -18,16 +19,21 @@ namespace IS {
             ~Master3DRenderer();
 
             void prepare();
-            void render(Camera camera, RawModel mesh);
+            void render(Camera camera);
 
-            void addEntity(Entity *entity, int scene = 0);
-            void addLight(const Light &light, int scene = 0);
+            void add(Entity *entity, int scene = 0);
+            void add(Chunk *chunk, int scene = 0);
+            void add(const Light &light, int scene = 0);
 
             void destroy();
 
+            void disableCulling() const;
+            void enableCulling() const;
+
         protected:
         private:
-            Renderer _renderer;
+            Entity3DRenderer _entityRenderer;
+            Terrain3DRenderer _terrainRenderer;
     };
 }
 

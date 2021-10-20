@@ -8,8 +8,8 @@
 #include "Entity.hpp"
 
 IS::Entity::Entity(const TexturedModel &texturedModel, sf::Vector3f position, sf::Vector3f rotation, float scale)
+    : _texturedModel(texturedModel)
 {
-    _texturedModel = texturedModel;
     _position = position;
     _rotation = rotation;
     _scale = scale;
@@ -17,6 +17,13 @@ IS::Entity::Entity(const TexturedModel &texturedModel, sf::Vector3f position, sf
 
 IS::Entity::~Entity()
 {
+}
+
+void IS::Entity::increaseVelocity(sf::Vector3f vec)
+{
+    _velocity.x += vec.x;
+    _velocity.y += vec.y;
+    _velocity.z += vec.z;
 }
 
 void IS::Entity::increasePosition(sf::Vector3f vec)
@@ -33,10 +40,20 @@ void IS::Entity::increaseRotation(sf::Vector3f vec)
     _rotation.z += vec.z;
 }
 
+bool IS::Entity::update()
+{
+    return (true);
+}
+
 
 IS::TexturedModel IS::Entity::getTexturedModel() const
 {
     return (_texturedModel);
+}
+
+sf::Vector3f IS::Entity::getVelocity() const
+{
+    return (_velocity);
 }
 
 sf::Vector3f IS::Entity::getPosition() const
@@ -57,6 +74,11 @@ float IS::Entity::getScale() const
 void IS::Entity::setTexturedModel(TexturedModel texturedModel)
 {
     _texturedModel = texturedModel;
+}
+
+void IS::Entity::setVelocity(sf::Vector3f velocity)
+{
+    _velocity = velocity;
 }
 
 void IS::Entity::setPosition(sf::Vector3f position)

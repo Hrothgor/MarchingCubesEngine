@@ -13,18 +13,21 @@
 class FastNoiseLite;
 namespace IS {
     class Loader;
+    class TexturedModel;
+    class Entity;
     class Chunk;
-
-    struct ScalarPoint {
-        sf::Vector3f pos;
-        float value;
-    };
+    class Camera;
 
     namespace GLOBAL {
-        inline IS::Loader *loader;
-        inline FastNoiseLite *noise;
+        inline std::map<std::string, TexturedModel *> _texturedModels;
+        
+        inline std::vector<Entity *> _entities;
+        inline std::vector<Chunk *> _chunks;
 
-        inline std::vector<Chunk> *chunks;
+        inline IS::Camera *camera;
+        inline IS::Loader *_loader;
+        inline FastNoiseLite *_noise;
+
     };
 }
 
