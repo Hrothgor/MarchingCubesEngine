@@ -25,13 +25,16 @@ namespace IS {
 
             RawModel loadMarchingCubesModel(std::vector<ScalarPoint> points);
 
+
         protected:
         private:
             sf::Vector3f LinearInterp(IS::ScalarPoint p1, IS::ScalarPoint p2, float value);
             void pushVertex(sf::Vector3f pos1, sf::Vector3f pos2, sf::Vector3f vertex, sf::Vector3f normal);
             int indexFromCoord(sf::Vector3f coord);
+            void clear();
 
             std::map<std::pair<int, int>, int> _vertexIndexMap;
+            std::vector<sf::Vector3f> _allVertex;
             std::vector<float> _vertices;
             std::vector<int> _indices;
             std::vector<float> _normals;

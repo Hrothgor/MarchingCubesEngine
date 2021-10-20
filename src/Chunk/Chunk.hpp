@@ -14,7 +14,7 @@
 namespace IS {
     class Chunk {
         public:
-            Chunk(sf::Vector3i coord, int _size);
+            Chunk(sf::Vector3f coord, int _size);
             ~Chunk();
 
             bool update();
@@ -23,14 +23,14 @@ namespace IS {
 
             std::vector<ScalarPoint> getScalarPoints() const;
             RawModel getModel() const;
-            sf::Vector3i getCoord() const;
+            sf::Vector3f getCoord() const;
 
             void setScalarPoints(std::vector<ScalarPoint> scalarpoints);
             void setModel(RawModel model);
         protected:
         private:
             int _size;
-            sf::Vector3i _id;
+            sf::Vector3f _id;
 
             std::vector<ScalarPoint> _points;
             MarchingCubes _MC;

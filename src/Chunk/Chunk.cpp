@@ -7,7 +7,7 @@
 
 #include "Chunk.hpp"
 
-IS::Chunk::Chunk(sf::Vector3i coord, int size)
+IS::Chunk::Chunk(sf::Vector3f coord, int size)
     : _id(coord)
     , _size(size)
     , _MC(size, 0)
@@ -23,7 +23,7 @@ void IS::Chunk::generateChunk()
 {
     if (_points.size() != 0) {
         _model = _MC.loadMarchingCubesModel(_points);
-        _model.changeAmbientColor(0, {1, 0.75, 0.80});
+        // _model.changeAmbientColor(0, {1, 0.75, 0.80});
     }
 }
 
@@ -47,7 +47,7 @@ void IS::Chunk::setModel(RawModel model)
     _model = model;
 }
 
-sf::Vector3i IS::Chunk::getCoord() const
+sf::Vector3f IS::Chunk::getCoord() const
 {
     return (_id);
 }

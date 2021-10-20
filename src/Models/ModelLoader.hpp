@@ -20,6 +20,7 @@ namespace IS {
 
             static RawModel loadModelFromObj(std::string fileName);
             static RawModel loadModel(std::vector<float> vertices, std::vector<float> normals, std::vector<int> indices);
+            static RawModel loadModel(std::vector<sf::Vector3f> allVertex, std::vector<float> vertices, std::vector<float> normals, std::vector<int> indices);
         protected:
         private:
     };

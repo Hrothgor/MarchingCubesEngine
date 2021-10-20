@@ -84,7 +84,27 @@ IS::RawModel IS::ModelLoader::loadModel(std::vector<float> vertices, std::vector
 {
     RawModel rawModel;
 
-    rawModel.addMesh(GLOBAL::_loader->LoadToVAO(vertices, normals, indices));
+    RawMesh rawMesh = GLOBAL::_loader->LoadToVAO(vertices, normals, indices);
+
+    Mesh mesh;
+    mesh.setRawMesh(rawMesh);
+
+    rawModel.addMesh(mesh);
+    rawModel.addMaterial({"default", {1,1,1}});
+    return rawModel;
+}
+
+IS::RawModel IS::ModelLoader::loadModel(std::vector<sf::Vector3f> allVertex, std::vector<float> vertices, std::vector<float> normals, std::vector<int> indices)
+{
+    RawModel rawModel;
+
+    RawMesh rawMesh = GLOBAL::_loader->LoadToVAO(vertices, normals, indices);
+
+    Mesh mesh;
+    mesh.setRawMesh(rawMesh);
+    mesh.setAllVertex(allVertex);
+
+    rawModel.addMesh(mesh);
     rawModel.addMaterial({"default", {1,1,1}});
     return rawModel;
 }

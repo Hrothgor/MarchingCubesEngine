@@ -61,6 +61,7 @@ void IS::MarchingCubes::pushVertex(sf::Vector3f pos1, sf::Vector3f pos2, sf::Vec
 
 IS::RawModel IS::MarchingCubes::loadMarchingCubesModel(std::vector<ScalarPoint> points)
 {
+    clear();
     int YtimeZ = (_sizeY)*(_sizeZ);
     
     for(int z = 0; z < _sizeZ - 1; z++)
@@ -107,7 +108,21 @@ IS::RawModel IS::MarchingCubes::loadMarchingCubesModel(std::vector<ScalarPoint> 
                     pushVertex(cubeVertices[a0].pos, cubeVertices[a1].pos, vertexA, normal);
                     pushVertex(cubeVertices[b0].pos, cubeVertices[b1].pos, vertexB, normal);
                     pushVertex(cubeVertices[c0].pos, cubeVertices[c1].pos, vertexC, normal);
+
+                    _allVertex.push_back(vertexA);
+                    _allVertex.push_back(vertexB);
+                    _allVertex.push_back(vertexC);
                 }
             }
-    return ModelLoader::loadModel(_vertices, _normals, _indices);
+    return ModelLoader::loadModel(_allVertex, _vertices, _normals, _indices);
+}
+
+void IS::MarchingCubes::clear()
+{
+    _vertexIndexMap.clear();
+    _allVertex.clear();
+    _vertices.clear();
+    _indices.clear();
+    _normals.clear();
+    _vertexCount = 0;
 }

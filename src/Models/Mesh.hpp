@@ -14,10 +14,6 @@ namespace IS {
     struct RawMesh {
         int vao = -1;
         int vertexCount = 0;
-        std::vector<float> vertices;
-        std::vector<float> normals;
-        std::vector<float> textureCoords;
-        std::vector<int> indices;
     };
 
     class Mesh {
@@ -31,16 +27,20 @@ namespace IS {
             void setRawMesh(RawMesh mesh);
             void setName(std::string name);
             void setMaterialIndex(int i);
+            void setAllVertex(std::vector<sf::Vector3f> allVertex);
 
+            RawMesh getRawMesh() const;
             int getVao() const;
             int getVertexCount() const;
             std::string getName() const;
             int getMaterialIndex() const;
+            std::vector<sf::Vector3f> getAllVertex() const;
 
         protected:
         private:
             std::string _name = "default";
             RawMesh _mesh;
+            std::vector<sf::Vector3f> _allVertex;
             int _materialIndex = 0;
     };
 }

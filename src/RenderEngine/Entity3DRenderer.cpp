@@ -10,7 +10,7 @@
 IS::Entity3DRenderer::Entity3DRenderer()
 {
     _shader.start();
-    _shader.loadProjectionMatrix(Maths::createProjectionMatrix());
+    _shader.loadProjectionMatrix(Maths::createProjectionMatrix().getMatrix());
     _shader.stop();
 }
 
@@ -26,7 +26,7 @@ void IS::Entity3DRenderer::prepareShader(Camera camera)
                 camera.getPosition(),
                 camera.getPitch(),
                 camera.getYaw(),
-                camera.getRoll()));
+                camera.getRoll()).getMatrix());
 }
 
 void IS::Entity3DRenderer::render(Camera camera, int scene)
@@ -48,6 +48,7 @@ void IS::Entity3DRenderer::render(Camera camera, int scene)
     }
 
     _shader.stop();
+    clear(scene);
 }
 
 void IS::Entity3DRenderer::prepareTextureModel(TexturedModel texturedModel, Mesh mesh)
@@ -78,7 +79,7 @@ void IS::Entity3DRenderer::prepareInstance(Entity *entity)
         Maths::createTransformationMatrix(\
             entity->getPosition(), \
             entity->getRotation(), \
-            entity->getScale()));
+            entity->getScale()).getMatrix());
 }
 
 void IS::Entity3DRenderer::disableCulling() const
@@ -90,6 +91,13 @@ void IS::Entity3DRenderer::enableCulling() const
 {
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
+}
+
+void IS::Entity3DRenderer::clear(int scene)
+{
+    for (auto &list : _entities) {
+        list.second.clear();
+    }
 }
 
 void IS::Entity3DRenderer::addEntity(Entity *entity, int scene)

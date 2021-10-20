@@ -10,7 +10,8 @@
 IS::Terrain3DRenderer::Terrain3DRenderer()
 {
     _shader.start();
-    _shader.loadProjectionMatrix(Maths::createProjectionMatrix());
+    _shader.loadProjectionMatrix(Maths::createProjectionMatrix().getMatrix());
+    _shader.loadPlanetCenter({4 * 20 / 2, 4 * 20 / 2, 4 * 20 / 2});
     _shader.stop();
 }
 
@@ -26,7 +27,7 @@ void IS::Terrain3DRenderer::prepareShader(Camera camera)
                 camera.getPosition(),
                 camera.getPitch(),
                 camera.getYaw(),
-                camera.getRoll()));
+                camera.getRoll()).getMatrix());
 }
 
 float angle = 0;
@@ -53,6 +54,7 @@ void IS::Terrain3DRenderer::render(Camera camera, int scene)
     }
 
     _shader.stop();
+    clear(scene);
 }
 
 void IS::Terrain3DRenderer::prepareModel(RawModel model, Mesh mesh)
@@ -61,7 +63,6 @@ void IS::Terrain3DRenderer::prepareModel(RawModel model, Mesh mesh)
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
 
-    _shader.loadShineVariable(4, 0.1);
     _shader.loadAmbientColor(model.getMaterials(mesh.getMaterialIndex()).Ka);
 }
 
@@ -80,7 +81,7 @@ void IS::Terrain3DRenderer::prepareInstance(Chunk *chunk)
         Maths::createTransformationMatrix(\
             vec, \
             {0, 0, 0}, \
-            1));
+            1).getMatrix());
 }
 
 void IS::Terrain3DRenderer::disableCulling() const
@@ -92,6 +93,13 @@ void IS::Terrain3DRenderer::enableCulling() const
 {
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
+}
+
+void IS::Terrain3DRenderer::clear(int scene)
+{
+    for (auto &list : _chunks) {
+        list.second.clear();
+    }
 }
 
 void IS::Terrain3DRenderer::addChunk(Chunk *chunk, int scene)

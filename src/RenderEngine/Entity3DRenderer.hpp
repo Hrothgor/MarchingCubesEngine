@@ -31,6 +31,7 @@ namespace IS {
             void disableCulling() const;
             void enableCulling() const;
 
+            void clear(int scene);
             void addEntity(Entity *entity, int scene);
             void addLight(const Light &light, int scene);
 

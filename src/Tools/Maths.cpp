@@ -7,21 +7,21 @@
 
 #include "Maths.hpp"
 
-Maths::Maths()
+IS::Maths::Maths()
 {
 }
 
-Maths::~Maths()
+IS::Maths::~Maths()
 {
 }
 
-float Maths::randFloat()
+float IS::Maths::randFloat()
 {
     float scale = rand() / (float) RAND_MAX;
     return (scale);
 }
 
-std::vector<float> Maths::createTransformationMatrix(sf::Vector3f translation, sf::Vector3f rotation, float scale)
+IS::Matrix4f IS::Maths::createTransformationMatrix(sf::Vector3f translation, sf::Vector3f rotation, float scale)
 {
     Matrix4f matrix;
 
@@ -31,10 +31,10 @@ std::vector<float> Maths::createTransformationMatrix(sf::Vector3f translation, s
     matrix.rotate(rotation.y, sf::Vector3f(0, 1, 0));
     matrix.rotate(rotation.z, sf::Vector3f(0, 0, 1));
     matrix.scale(sf::Vector3f(scale, scale, scale));
-    return (matrix.getMatrix());
+    return (matrix);
 }
 
-std::vector<float> Maths::createProjectionMatrix()
+IS::Matrix4f IS::Maths::createProjectionMatrix()
 {
     Matrix4f matrix;
 
@@ -50,10 +50,10 @@ std::vector<float> Maths::createProjectionMatrix()
     matrix[11] = -1;
     matrix[14] = -((2 * NEAR_PLANE * FAR_PLANE) / frustum_length);
     matrix[15] = 0;
-    return (matrix.getMatrix());
+    return (matrix);
 }
 
-std::vector<float> Maths::createViewMatrix(sf::Vector3f pos, float pitch, float yaw, float roll)
+IS::Matrix4f IS::Maths::createViewMatrix(sf::Vector3f pos, float pitch, float yaw, float roll)
 {
     Matrix4f matrix;
 
@@ -62,5 +62,5 @@ std::vector<float> Maths::createViewMatrix(sf::Vector3f pos, float pitch, float 
     matrix.rotate(yaw, sf::Vector3f(0, 1, 0));
     matrix.rotate(roll, sf::Vector3f(0, 0, 1));
     matrix.translate(sf::Vector3f(-pos.x, -pos.y, -pos.z));
-    return (matrix.getMatrix());
+    return (matrix);
 }

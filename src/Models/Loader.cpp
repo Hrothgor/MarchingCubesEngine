@@ -39,10 +39,6 @@ IS::RawMesh IS::Loader::LoadToVAO(std::vector<float> vertices, std::vector<float
     RawMesh mesh;
     mesh.vao = vaoID;
     mesh.vertexCount = indices.size();
-    mesh.vertices = vertices;
-    mesh.normals = normals;
-    mesh.textureCoords = textureCoord;
-    mesh.indices = indices;
     return (mesh);
 }
 
@@ -57,9 +53,6 @@ IS::RawMesh IS::Loader::LoadToVAO(std::vector<float> vertices, std::vector<float
     RawMesh mesh;
     mesh.vao = vaoID;
     mesh.vertexCount = indices.size();
-    mesh.vertices = vertices;
-    mesh.normals = normals;
-    mesh.indices = indices;
     return (mesh);
 }
 

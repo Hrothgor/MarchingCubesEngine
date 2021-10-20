@@ -10,10 +10,11 @@
 
 #include "../global.hpp"
 #include "Master3DRenderer.hpp"
-#include "../Entities/Camera.hpp"
-#include "../Entities/Light.hpp"
+#include "RayCasting.hpp"
 
+#include "../Entities/Light.hpp"
 #include "../Models/Loader.hpp"
+#include "../Entities/Camera.hpp"
 #include "../Chunk/Chunk.hpp"
 
 namespace IS {

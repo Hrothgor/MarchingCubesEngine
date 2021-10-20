@@ -26,9 +26,8 @@ void IS::TerrainShader::getAllUniformLocation()
     loc_viewMatrix = getUniformLocation("viewMatrix");
     loc_lightPosition = getUniformLocation("lightPosition");
     loc_lightColor = getUniformLocation("lightColor");
-    loc_shineDamper = getUniformLocation("shineDamper");
-    loc_reflectivity = getUniformLocation("reflectivity");
     loc_ambientColor = getUniformLocation("ambientColor");
+    loc_planetCenter = getUniformLocation("planetCenter");
 }
 
 void IS::TerrainShader::loadTransformationMatrix(std::vector<float> matrix)
@@ -52,13 +51,12 @@ void IS::TerrainShader::loadLight(Light light)
     loadVector3(loc_lightColor, light.getColor());
 }
 
-void IS::TerrainShader::loadShineVariable(float shineDamper, float reflectivity)
-{
-    loadFloat(loc_shineDamper, shineDamper);
-    loadFloat(loc_reflectivity, reflectivity);
-}
-
 void IS::TerrainShader::loadAmbientColor(sf::Vector3f ka)
 {
     loadVector3(loc_ambientColor, ka);
+}
+
+void IS::TerrainShader::loadPlanetCenter(sf::Vector3f planetCenter)
+{
+    loadVector3(loc_planetCenter, planetCenter);
 }

@@ -24,7 +24,7 @@ namespace IS {
         inline std::vector<Entity *> _entities;
         inline std::vector<Chunk *> _chunks;
 
-        inline IS::Camera *camera;
+        inline IS::Camera *_camera;
         inline IS::Loader *_loader;
         inline FastNoiseLite *_noise;
 
