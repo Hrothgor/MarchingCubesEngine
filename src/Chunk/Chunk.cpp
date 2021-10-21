@@ -23,8 +23,18 @@ void IS::Chunk::generateChunk()
 {
     if (_points.size() != 0) {
         _model = _MC.loadMarchingCubesModel(_points);
-        // _model.changeAmbientColor(0, {1, 0.75, 0.80});
+        _model.changeAmbientColor(0, {1, 0.75, 0.80});
     }
+}
+
+void IS::Chunk::changePointValue(sf::Vector3f pos, float value)
+{
+    for (ScalarPoint &_point : _points)
+        if (_point.pos == pos) {
+            _point.value += value;
+            _regenerate = true;
+            return;
+        }
 }
 
 std::vector<IS::ScalarPoint> IS::Chunk::getScalarPoints() const
@@ -32,19 +42,9 @@ std::vector<IS::ScalarPoint> IS::Chunk::getScalarPoints() const
     return (_points);
 }
 
-void IS::Chunk::setScalarPoints(std::vector<IS::ScalarPoint> scalarpoints)
-{
-    _points = scalarpoints;
-}
-
 IS::RawModel IS::Chunk::getModel() const
 {
     return (_model);
-}
-
-void IS::Chunk::setModel(RawModel model)
-{
-    _model = model;
 }
 
 sf::Vector3f IS::Chunk::getCoord() const
@@ -52,10 +52,25 @@ sf::Vector3f IS::Chunk::getCoord() const
     return (_id);
 }
 
+int IS::Chunk::getSize() const
+{
+    return (_size);
+}
+
+void IS::Chunk::setScalarPoints(std::vector<IS::ScalarPoint> scalarpoints)
+{
+    _points = scalarpoints;
+}
+
+void IS::Chunk::setModel(RawModel model)
+{
+    _model = model;
+}
+
 bool IS::Chunk::update()
 {
     if (_regenerate == true) {
-
+        generateChunk();
     }
     _regenerate = false;
     return (true);

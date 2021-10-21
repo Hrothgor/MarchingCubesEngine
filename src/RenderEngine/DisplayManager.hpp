@@ -11,6 +11,7 @@
 #include "../global.hpp"
 #include "Master3DRenderer.hpp"
 #include "RayCasting.hpp"
+#include "Terraforming.hpp"
 
 #include "../Entities/Light.hpp"
 #include "../Models/Loader.hpp"

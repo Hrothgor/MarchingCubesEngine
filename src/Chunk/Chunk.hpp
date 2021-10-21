@@ -20,13 +20,16 @@ namespace IS {
             bool update();
 
             void generateChunk();
+            void changePointValue(sf::Vector3f pos, float value);
 
             std::vector<ScalarPoint> getScalarPoints() const;
             RawModel getModel() const;
             sf::Vector3f getCoord() const;
+            int getSize() const;
 
             void setScalarPoints(std::vector<ScalarPoint> scalarpoints);
             void setModel(RawModel model);
+            void setRegenerate(bool val);
         protected:
         private:
             int _size;

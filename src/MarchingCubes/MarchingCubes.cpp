@@ -103,7 +103,7 @@ IS::RawModel IS::MarchingCubes::loadMarchingCubesModel(std::vector<ScalarPoint> 
                     sf::Vector3f vertexB = LinearInterp(cubeVertices[b0], cubeVertices[b1], _isoValue);
                     sf::Vector3f vertexC = LinearInterp(cubeVertices[c0], cubeVertices[c1], _isoValue);
 
-                    sf::Vector3f normal = -Normalize(Cross(vertexB - vertexA, vertexC - vertexA));
+                    sf::Vector3f normal = Normalize(Cross(vertexB - vertexA, vertexC - vertexA));
 
                     pushVertex(cubeVertices[a0].pos, cubeVertices[a1].pos, vertexA, normal);
                     pushVertex(cubeVertices[b0].pos, cubeVertices[b1].pos, vertexB, normal);

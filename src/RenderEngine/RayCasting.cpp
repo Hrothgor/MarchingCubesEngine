@@ -27,24 +27,28 @@ void IS::RayCasting::update(sf::RenderWindow *window)
     _origin = GLOBAL::_camera->getPosition();
 }
 
-bool IS::RayCasting::intersect(std::vector<sf::Vector3f> _triangles, sf::Vector3f meshPos)
+bool IS::RayCasting::intersect()
 {
     bool isIntersect = false; 
     float minDist = INFINITY;
 
-    for (int i = 0; i < _triangles.size(); i += 3) { 
-        sf::Vector3f v0 = _triangles[i] + meshPos;
-        sf::Vector3f v1 = _triangles[i + 1] + meshPos; 
-        sf::Vector3f v2 = _triangles[i + 2] + meshPos;
-        if (rayIntersectTriangle(v0, v1, v2)) {
-            float dist = length(_currentIntersectPoint - _origin);
-            if (dist < minDist) {
-                minDist = dist;
-                _currentIntersectPoint = _tmpIntersectPoint;
-                isIntersect = true;
+    for (Chunk *chunk : GLOBAL::_chunks) {
+        std::vector<sf::Vector3f> _triangles = chunk->getModel().getMeshs()[0].getAllVertex();
+        sf::Vector3f meshPos = chunk->getCoord();
+        for (int i = 0; i < _triangles.size(); i += 3) { 
+            sf::Vector3f v0 = _triangles[i] + meshPos;
+            sf::Vector3f v1 = _triangles[i + 1] + meshPos; 
+            sf::Vector3f v2 = _triangles[i + 2] + meshPos;
+            if (rayIntersectTriangle(v0, v1, v2)) {
+                float dist = length(_tmpIntersectPoint - _origin);
+                if (dist < minDist) {
+                    minDist = dist;
+                    _currentIntersectPoint = _tmpIntersectPoint;
+                    isIntersect = true;
+                }
             }
-        }
-    } 
+        } 
+    }
     return (isIntersect);
 }
 

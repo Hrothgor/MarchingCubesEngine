@@ -69,12 +69,9 @@ void IS::DisplayManager::load()
 
     GLOBAL::_texturedModels["bomberman"] = new TexturedModel("bomberman");
 
-    GLOBAL::_entities.push_back(new Entity(*GLOBAL::_texturedModels["bomberman"], { 0, 0, 0 }, { 0, 0, 0 }, 1));
+    GLOBAL::_entities.push_back(new Entity(*GLOBAL::_texturedModels["bomberman"], { 0, 0, 0 }, { 0, 0, 0 }, 3));
 
     sf::Clock clock;
-
-    int chunkMax = 8;
-    int chunkSize = 10;
 
     int textureSize = chunkMax * chunkSize;
     int planetSize = textureSize / 3;
@@ -114,9 +111,6 @@ void IS::DisplayManager::load()
                 }
                 chunk->setScalarPoints(mcPoints);
                 chunk->generateChunk();
-                // RawModel tmp = chunk->getModel();
-                // tmp.changeAmbientColor(0, {((float) rand() / (RAND_MAX)), ((float) rand() / (RAND_MAX)), ((float) rand() / (RAND_MAX))});
-                // chunk->setModel(tmp);
                 GLOBAL::_chunks.push_back(chunk);
             }
         }
@@ -131,9 +125,10 @@ void IS::DisplayManager::run()
     ///// 3D INIT /////
     Master3DRenderer _3Drenderer;
 
-    _3Drenderer.add(Light({0, 2000, 3000}, {1, 1, 1}));
+    _3Drenderer.add(Light({0, 20000, 0}, {1, 1, 1}));
 
     RayCasting ray;
+    Terraforming terraform;
     ///////////////////
 
     ///// 2D INIT/////
@@ -157,11 +152,15 @@ void IS::DisplayManager::run()
             _3Drenderer.add(chunk);
 
         ray.update(_window);
-        for (Chunk *chunk : GLOBAL::_chunks) {
-            if (ray.intersect(chunk->getModel().getMeshs()[0].getAllVertex(), chunk->getCoord())) {
-                GLOBAL::_entities[0]->setPosition(ray.getCurrentIntersectPoint());
-                break;
-            }
+        if (ray.intersect()) {
+            GLOBAL::_entities[0]->setPosition(ray.getCurrentIntersectPoint());
+            terraform.setBrushCenter(ray.getCurrentIntersectPoint());
+        }
+        if (_keysSmooth[Input::LMouse]) {
+            terraform.terraform(TerraformType::Out);
+        }
+        if (_keysSmooth[Input::RMouse]) {
+            terraform.terraform(TerraformType::In);
         }
 
         //// 3D ////

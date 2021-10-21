@@ -10,6 +10,7 @@
 
 #include "../global.hpp"
 #include "../Entities/Camera.hpp"
+#include "../Chunk/Chunk.hpp"
 
 namespace IS {
     class RayCasting {
@@ -19,7 +20,7 @@ namespace IS {
 
             void update(sf::RenderWindow *window);
 
-            bool intersect(std::vector<sf::Vector3f> _triangles, sf::Vector3f meshPos);
+            bool intersect();
             bool rayIntersectTriangle(sf::Vector3f v0, sf::Vector3f v1, sf::Vector3f v2);
 
             sf::Vector3f calculateRay(float x, float y);

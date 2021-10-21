@@ -11,7 +11,7 @@ IS::Terrain3DRenderer::Terrain3DRenderer()
 {
     _shader.start();
     _shader.loadProjectionMatrix(Maths::createProjectionMatrix().getMatrix());
-    _shader.loadPlanetCenter({4 * 20 / 2, 4 * 20 / 2, 4 * 20 / 2});
+    _shader.loadPlanetCenter({chunkMax * chunkSize / 2, chunkMax * chunkSize / 2, chunkMax * chunkSize / 2});
     _shader.stop();
 }
 
@@ -30,13 +30,9 @@ void IS::Terrain3DRenderer::prepareShader(Camera camera)
                 camera.getRoll()).getMatrix());
 }
 
-float angle = 0;
 
 void IS::Terrain3DRenderer::render(Camera camera, int scene)
 {
-    angle += 0.005;
-    _light.setPosition({sinf(angle) * 3000, 0, cosf(angle) * 3000});
-
     prepareShader(camera);
 
     for (auto &list : _chunks) {

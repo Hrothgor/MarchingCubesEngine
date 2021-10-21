@@ -23,10 +23,10 @@ void IS::Camera::move(std::vector<bool> keys, sf::RenderWindow *window)
 {
     _pitch += ((int)(window->getSize().y / 2) - sf::Mouse::getPosition(*window).y) * 0.1;
     _yaw += ((int)(window->getSize().x / 2) - sf::Mouse::getPosition(*window).x) * 0.1;
-    if (_pitch < -80)
-        _pitch = -80;
-    if (_pitch > 80)
-        _pitch = 80;
+    if (_pitch < -90)
+        _pitch = -90;
+    if (_pitch > 90)
+        _pitch = 90;
     sf::Mouse::setPosition({(int)(window->getSize().x / 2), (int)(window->getSize().y / 2)}, *window);
 
     if (keys[Input::Z])
