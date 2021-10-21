@@ -6,8 +6,8 @@
 ##
 
 SRC =	$(wildcard src/*.cpp)		\
-		$(wildcard src/*/*.cpp)		\
-		$(wildcard src/*/*/*.cpp)		\
+	$(wildcard src/*/*.cpp)		\
+	$(wildcard src/*/*/*.cpp)		\
 
 NAME = Engine_Marching_cubes
 
