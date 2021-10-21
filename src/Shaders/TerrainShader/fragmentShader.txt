@@ -113,7 +113,7 @@ float snoise(vec3 v)
     // Mix final noise value
     vec4 m = max(0.5 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0);
     m = m * m;
-    return 105.0 * dot( m*m, vec4( dot(p0,x0), dot(p1,x1), 
+    return 10.5 * dot( m*m, vec4( dot(p0,x0), dot(p1,x1), 
                                     dot(p2,x2), dot(p3,x3) ) );
 }
 
@@ -132,6 +132,7 @@ void main(void)
         vec3 color;
         if (steepNess > 0.8) {
             color = vec3(0.4,0.6,0.0);
+	        color += vec3(snoise(worldPosition.xyz) * vec3(0.4,0.3,0.0));
         } else {
             color = vec3(0.53, 0.32, 0.22);
         }

@@ -13,7 +13,7 @@ IS::DisplayManager::DisplayManager()
 {
     sf::ContextSettings settings(24, 8, 0, 3.3, 0, 0, 0);
     _window = new sf::RenderWindow(sf::VideoMode(WIDTH, HEIGHT, 32), "3D", sf::Style::Default, settings);
-    _window->setFramerateLimit(120);
+    // _window->setFramerateLimit(120);
     glViewport(0, 0, WIDTH, HEIGHT);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
@@ -73,8 +73,8 @@ void IS::DisplayManager::load()
 
     sf::Clock clock;
 
-    int chunkMax = 4;
-    int chunkSize = 20;
+    int chunkMax = 8;
+    int chunkSize = 10;
 
     int textureSize = chunkMax * chunkSize;
     int planetSize = textureSize / 3;
