@@ -1,0 +1,35 @@
+#version 430 core
+
+layout(local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
+
+// layout(rgba32f, binding = 0) uniform image2D img_output;
+
+struct Triangle {
+	vec3 pos;
+	float memFillaA; // because vec3 in memory is a vec4
+	vec3 normal;
+	float memFillaB; // because vec3 in memory is a vec4
+	ivec2 id;
+	float memFillaC; // because vec2 in memory is a vec4
+	float memFillaD; // because vec2 in memory is a vec4
+};
+
+layout(std430, binding = 0) writeonly buffer buffer_out {
+	Triangle triangles[];
+};
+
+void main() {
+	uint id = gl_GlobalInvocationID.x;
+	
+	if (id >= 512) {
+		return;
+	}
+
+	triangles[id].pos = vec3(666.666, 666.666, 666.666);
+	triangles[id].normal = vec3(333.333, 333.333, 333.333);
+	triangles[id].id = ivec2(111.111, 111.111);
+
+	// vec4 pixel = vec4(id.x & id.y, (id.x & 15)/15.0, (id.y & 15)/15.0, 1.0);
+
+	// imageStore(img_output, id, pixel);
+}

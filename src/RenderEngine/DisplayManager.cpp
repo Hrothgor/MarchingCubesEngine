@@ -67,9 +67,9 @@ void IS::DisplayManager::load()
     GLOBAL::_noise->SetFrequency(0.01);
     GLOBAL::_noise->SetSeed(rand());
 
-    GLOBAL::_texturedModels["bomberman"] = new TexturedModel("bomberman");
+    GLOBAL::_texturedModels["dragon"] = new TexturedModel("dragon");
 
-    GLOBAL::_entities.push_back(new Entity(*GLOBAL::_texturedModels["bomberman"], { 0, 0, 0 }, { 0, 0, 0 }, 3));
+    GLOBAL::_entities.push_back(new Entity(*GLOBAL::_texturedModels["dragon"], { 0, 0, 0 }, { 0, 0, 0 }, 3));
 
     sf::Clock clock;
 
@@ -153,7 +153,7 @@ void IS::DisplayManager::run()
 
         ray.update(_window);
         if (ray.intersect()) {
-            GLOBAL::_entities[0]->setPosition(ray.getCurrentIntersectPoint());
+            // GLOBAL::_entities[0]->setPosition(ray.getCurrentIntersectPoint());
             terraform.setBrushCenter(ray.getCurrentIntersectPoint());
         }
         if (_keysSmooth[Input::LMouse]) {

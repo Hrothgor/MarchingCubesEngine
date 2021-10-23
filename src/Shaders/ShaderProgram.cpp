@@ -7,15 +7,8 @@
 
 #include "ShaderProgram.hpp"
 
-IS::ShaderProgram::ShaderProgram(std::string vertexFile, std::string fragmentFile)
+IS::ShaderProgram::ShaderProgram()
 {
-    _vertexShaderID = loadShader(vertexFile, GL_VERTEX_SHADER);
-    _fragmentShaderID = loadShader(fragmentFile, GL_FRAGMENT_SHADER);
-    _programID = glCreateProgram();
-    glAttachShader(_programID, _vertexShaderID);
-    glAttachShader(_programID, _fragmentShaderID);
-    glLinkProgram(_programID);
-    glValidateProgram(_programID);
 }
 
 IS::ShaderProgram::~ShaderProgram()
@@ -35,11 +28,6 @@ void IS::ShaderProgram::stop() const
 void IS::ShaderProgram::destroy() const
 {
     stop();
-    glDetachShader(_programID, _vertexShaderID);
-    glDetachShader(_programID, _fragmentShaderID);
-    glDeleteShader(_vertexShaderID);
-    glDeleteShader(_fragmentShaderID);
-    glDeleteProgram(_programID);
 }
 
 int IS::ShaderProgram::loadShader(std::string file, unsigned int type) const

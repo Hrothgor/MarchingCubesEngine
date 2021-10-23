@@ -1,0 +1,41 @@
+#version 430 core
+
+layout(local_size_x=512, local_size_y=1, local_size_z=1) in;
+
+struct ScalarPoint {
+	vec3 pos;
+	float value;
+};
+
+struct Mesh {
+    vec3 allVertex[];
+    float vertices[];
+    float normals[];
+    int indices[];
+};
+
+layout(std430, binding=0) readonly buffer ScalarPoints_in {
+	ScalarPoint points[];
+} In_ScalarPoints;
+
+layout(std430, binding=1) writeonly buffer Mesh_out {
+	Mesh mesh;
+} Out_Mesh;
+
+uniform int _size;
+uniform float _isoValue;
+
+void main() {
+	const uint id = gl_GlobalInvocationID.z * gl_NumWorkGroups.y * gl_NumWorkGroups.x +
+					gl_GlobalInvocationID.y * gl_NumWorkGroups.x +
+					gl_GlobalInvocationID.x;
+
+	if (id >= 1) {
+		return;
+	}
+
+	Out_Mesh.mesh.allVertex[0] = vec3(0.0, 0.0, 0.0);
+	Out_Mesh.mesh.vertices[0] = 0.0;
+	Out_Mesh.mesh.normals[0] = 0.0;
+	Out_Mesh.mesh.indices[0] = 0;
+}

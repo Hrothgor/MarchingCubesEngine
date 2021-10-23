@@ -29,7 +29,7 @@
 #include <SFML/Audio.hpp>
 #include <SFML/Window.hpp>
 #include <SFML/OpenGL.hpp>
-#include <GLES3/gl3.h>
+#include <GLES3/gl31.h>
 
 #include "Errors/Errors.hpp"
 #include "Tools/Maths.hpp"

@@ -14,6 +14,8 @@
 #include "../Entities/Entity.hpp"
 #include "../Shaders/LightShader/LightShader.hpp"
 
+#include "../Shaders/MarchingCubeShader/MarchingCubeShader.hpp"
+
 namespace IS {
     class Entity3DRenderer {
         public:
@@ -41,6 +43,10 @@ namespace IS {
 
             Light _light;
             std::map<int, std::vector<Entity *>> _entities;
+
+            GLuint tex_output;
+            GLint bufMask;
+            MarchingCubeShader shader;
     };
 }
 

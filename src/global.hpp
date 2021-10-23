@@ -12,13 +12,14 @@
 
 class FastNoiseLite;
 namespace IS {
-    inline int chunkMax = 10;
+    inline int chunkMax = 2;
     inline int chunkSize = 10;
 
-    class Loader;
     class TexturedModel;
     class Entity;
     class Chunk;
+    
+    class Loader;
     class Camera;
 
     namespace GLOBAL {

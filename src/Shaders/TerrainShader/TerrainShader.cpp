@@ -7,7 +7,7 @@
 
 #include "TerrainShader.hpp"
 
-IS::TerrainShader::TerrainShader() : ShaderProgram( "src/Shaders/TerrainShader/vertexShader.txt", "src/Shaders/TerrainShader/fragmentShader.txt")
+IS::TerrainShader::TerrainShader() : VertFragShader("src/Shaders/TerrainShader/vertexShader.vert", "src/Shaders/TerrainShader/fragmentShader.frag")
 {
     bindAttribute(0, "position"); // 0 = VAOID des vertex pos, "position" = nom de variable dans le vertexShader.txt
     bindAttribute(2, "normal"); // 2 = VAOID des textures coord, "textureCoords" = nom de variable dans le vertexShader.txt

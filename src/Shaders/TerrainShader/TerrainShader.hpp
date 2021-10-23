@@ -9,11 +9,11 @@
 #define TERRAINSHADER_HPP_
 
 #include "../../global.hpp"
-#include "../ShaderProgram.hpp"
+#include "../VertFragShader.hpp"
 #include "../../Entities/Light.hpp"
 
 namespace IS {
-    class TerrainShader : public ShaderProgram {
+    class TerrainShader : public VertFragShader {
         public:
             TerrainShader();
             ~TerrainShader();

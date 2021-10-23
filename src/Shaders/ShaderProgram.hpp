@@ -13,7 +13,7 @@
 namespace IS {
     class ShaderProgram {
         public: 
-            ShaderProgram(std::string vertexFile, std::string fragmentFile);
+            ShaderProgram();
             ~ShaderProgram();
 
             void start() const;
@@ -31,10 +31,8 @@ namespace IS {
             void loadMatrix(int location, std::vector<float> value);
 
         protected:
-        private:
             int _programID;
-            int _vertexShaderID;
-            int _fragmentShaderID;
+        private:
     };
 }
 

@@ -7,7 +7,7 @@
 
 #include "LightShader.hpp"
 
-IS::LightShader::LightShader() : ShaderProgram( "src/Shaders/LightShader/vertexShader.txt", "src/Shaders/LightShader/fragmentShader.txt")
+IS::LightShader::LightShader() : VertFragShader("src/Shaders/LightShader/vertexShader.vert", "src/Shaders/LightShader/fragmentShader.frag")
 {
     bindAttribute(0, "position"); // 0 = VAOID des vertex pos, "position" = nom de variable dans le vertexShader.txt
     bindAttribute(1, "textureCoords"); // 1 = VAOID des textures coord, "textureCoords" = nom de variable dans le vertexShader.txt

@@ -7,11 +7,52 @@
 
 #include "Entity3DRenderer.hpp"
 
+struct Triangle {
+    sf::Vector3f pos;
+    float memFillA;
+    sf::Vector3f normal;
+    float memFillaB;
+    sf::Vector2i id;
+    float memFillaC;
+    float memFillaD;
+};
+
 IS::Entity3DRenderer::Entity3DRenderer()
 {
     _shader.start();
     _shader.loadProjectionMatrix(Maths::createProjectionMatrix().getMatrix());
     _shader.stop();
+
+
+    shader.start();
+    glGenBuffers(1, &tex_output);
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, tex_output);
+    glBufferData(GL_SHADER_STORAGE_BUFFER, 512 * sizeof(Triangle), NULL, GL_DYNAMIC_DRAW);
+
+    shader.dispatch(512, 1, 1);
+    glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, 0);
+
+    glBindBuffer(GL_SHADER_STORAGE_BUFFER, tex_output);
+    Triangle *returnArray = (Triangle *)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, 512 * sizeof(Triangle), GL_MAP_READ_BIT);
+    glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
+    
+    for (int i = 0; i < 512; i++)
+        std::cout << returnArray[i].pos.x << " " << returnArray[i].normal.x << " " << returnArray[i].id.x << std::endl;
+    shader.stop();
+
+    // int tex_w = 512, tex_h = 512;
+    // glGenTextures(1, &tex_output);
+    // glActiveTexture(GL_TEXTURE0);
+    // glBindTexture(GL_TEXTURE_2D, tex_output);
+    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, tex_w, tex_h, 0, GL_RGBA, GL_FLOAT,
+    // NULL);
+    // glBindImageTexture(0, tex_output, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
+    // glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 IS::Entity3DRenderer::~Entity3DRenderer()
@@ -31,6 +72,10 @@ void IS::Entity3DRenderer::prepareShader(Camera camera)
 
 void IS::Entity3DRenderer::render(Camera camera, int scene)
 {
+    // shader.start();
+    // shader.dispatch(512 / 8, 512 / 8, 1);
+    // glMemoryBarrier(GL_ALL_BARRIER_BITS);
+    // shader.stop();
     prepareShader(camera);
 
     for (auto &list : _entities) {
@@ -53,11 +98,13 @@ void IS::Entity3DRenderer::render(Camera camera, int scene)
 
 void IS::Entity3DRenderer::prepareTextureModel(TexturedModel texturedModel, Mesh mesh)
 {
+
     glBindVertexArray(mesh.getVao());
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
     glEnableVertexAttribArray(2);
     glActiveTexture(GL_TEXTURE0);
+    // glBindTexture(GL_TEXTURE_2D, tex_output);
     sf::Texture::bind(texturedModel.getTexture());
     
     _shader.loadShineVariable(texturedModel.getShineDamper(), texturedModel.getReflectivity());

@@ -9,11 +9,11 @@
 #define LIGHTSHADER_HPP_
 
 #include "../../global.hpp"
-#include "../ShaderProgram.hpp"
+#include "../VertFragShader.hpp"
 #include "../../Entities/Light.hpp"
 
 namespace IS {
-    class LightShader : public ShaderProgram {
+    class LightShader : public VertFragShader {
         public:
             LightShader();
             ~LightShader();
