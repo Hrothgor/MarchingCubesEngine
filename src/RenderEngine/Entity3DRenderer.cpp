@@ -23,22 +23,28 @@ IS::Entity3DRenderer::Entity3DRenderer()
     _shader.loadProjectionMatrix(Maths::createProjectionMatrix().getMatrix());
     _shader.stop();
 
-
     shader.start();
-    glGenBuffers(1, &tex_output);
-    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, tex_output);
-    glBufferData(GL_SHADER_STORAGE_BUFFER, 512 * sizeof(Triangle), NULL, GL_DYNAMIC_DRAW);
 
-    shader.dispatch(512, 1, 1);
+    std::vector<Triangle> data;
+    for (int i = 0; i < 248 * 248 * 248; i++)
+        data.push_back({{100,0,0}, 0, {0,0,0}, 0, {0,0}, 0, 0});
+    GLuint tmp;
+    glGenBuffers(1, &tmp);
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, tmp);
+    glBufferData(GL_SHADER_STORAGE_BUFFER, 248 * 248 * 248 * sizeof(Triangle), &data[0], GL_DYNAMIC_DRAW);
+    glGenBuffers(1, &tex_output);
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, tex_output);
+    glBufferData(GL_SHADER_STORAGE_BUFFER, 248 * 248 * 248 * sizeof(Triangle), NULL, GL_DYNAMIC_DRAW);
+
+    shader.dispatch(248 * 248 * 248, 1, 1);
     glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
     glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, 0);
 
     glBindBuffer(GL_SHADER_STORAGE_BUFFER, tex_output);
-    Triangle *returnArray = (Triangle *)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, 512 * sizeof(Triangle), GL_MAP_READ_BIT);
+    Triangle *returnArray = (Triangle *)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, 248 * 248 * 248 * sizeof(Triangle), GL_MAP_READ_BIT);
     glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
+    glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
     
-    for (int i = 0; i < 512; i++)
-        std::cout << returnArray[i].pos.x << " " << returnArray[i].normal.x << " " << returnArray[i].id.x << std::endl;
     shader.stop();
 
     // int tex_w = 512, tex_h = 512;
