@@ -29,14 +29,15 @@ void IS::Camera::move(std::vector<bool> keys, sf::RenderWindow *window)
         _pitch = 90;
     sf::Mouse::setPosition({(int)(window->getSize().x / 2), (int)(window->getSize().y / 2)}, *window);
 
+    float speed = 0;
     if (keys[Input::Z])
-        _position.z -= 0.2;
+        speed = -0.2;
     if (keys[Input::S])
-        _position.z += 0.2;
-    if (keys[Input::Q])
-        _position.x -= 0.2;
-    if (keys[Input::D])
-        _position.x += 0.2;
+        speed = 0.2;
+
+    _position.z += (speed * cos(_yaw * M_PI / 180));
+    _position.x += (speed * sin(_yaw * M_PI / 180));
+
     if (keys[Input::Space])
         _position.y += 0.2;
     if (keys[Input::LShift])
