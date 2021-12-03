@@ -24,41 +24,37 @@ IS::Entity3DRenderer::Entity3DRenderer()
     _shader.stop();
 
     shader.start();
-
     std::vector<Triangle> data;
-    for (int i = 0; i < 248 * 248 * 248; i++)
+    for (int i = 0; i < 128 * 128 * 128; i++)
         data.push_back({{100,0,0}, 0, {0,0,0}, 0, {0,0}, 0, 0});
-    GLuint tmp;
+    sf::Clock clock;
+    glGenBuffers(1, &atomicsBuffer);
+    glBindBufferBase(GL_ATOMIC_COUNTER_BUFFER, 2, atomicsBuffer);
+    glBufferData(GL_ATOMIC_COUNTER_BUFFER, sizeof(GLuint), NULL, GL_DYNAMIC_DRAW);
     glGenBuffers(1, &tmp);
     glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, tmp);
-    glBufferData(GL_SHADER_STORAGE_BUFFER, 248 * 248 * 248 * sizeof(Triangle), &data[0], GL_DYNAMIC_DRAW);
+    glBufferData(GL_SHADER_STORAGE_BUFFER, 128 * 128 * 128 * sizeof(Triangle), NULL, GL_DYNAMIC_DRAW);
     glGenBuffers(1, &tex_output);
     glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, tex_output);
-    glBufferData(GL_SHADER_STORAGE_BUFFER, 248 * 248 * 248 * sizeof(Triangle), NULL, GL_DYNAMIC_DRAW);
+    glBufferData(GL_SHADER_STORAGE_BUFFER, 128 * 128 * 128 * sizeof(Triangle), NULL, GL_DYNAMIC_DRAW);
 
-    shader.dispatch(248 * 248 * 248, 1, 1);
+    shader.dispatch(128/4, 128/4, 128/4);
     glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
     glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, 0);
 
     glBindBuffer(GL_SHADER_STORAGE_BUFFER, tex_output);
-    Triangle *returnArray = (Triangle *)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, 248 * 248 * 248 * sizeof(Triangle), GL_MAP_READ_BIT);
+    Triangle *returnArray = (Triangle *)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, 128 * 128 * 128 * sizeof(Triangle), GL_MAP_READ_BIT);
     glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
     glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
     
-    shader.stop();
+    glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, atomicsBuffer);
+    GLuint *userCounters = (GLuint*)glMapBufferRange(GL_ATOMIC_COUNTER_BUFFER, 0, sizeof(GLuint), GL_MAP_READ_BIT);
+    glUnmapBuffer(GL_ATOMIC_COUNTER_BUFFER);
+    glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
-    // int tex_w = 512, tex_h = 512;
-    // glGenTextures(1, &tex_output);
-    // glActiveTexture(GL_TEXTURE0);
-    // glBindTexture(GL_TEXTURE_2D, tex_output);
-    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, tex_w, tex_h, 0, GL_RGBA, GL_FLOAT,
-    // NULL);
-    // glBindImageTexture(0, tex_output, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
-    // glBindTexture(GL_TEXTURE_2D, 0);
+    sf::Time elapsed = clock.getElapsedTime();
+    std::cout << "Compute shader: " << elapsed.asSeconds() << std::endl;
+    shader.stop();
 }
 
 IS::Entity3DRenderer::~Entity3DRenderer()
@@ -78,10 +74,6 @@ void IS::Entity3DRenderer::prepareShader(Camera camera)
 
 void IS::Entity3DRenderer::render(Camera camera, int scene)
 {
-    // shader.start();
-    // shader.dispatch(512 / 8, 512 / 8, 1);
-    // glMemoryBarrier(GL_ALL_BARRIER_BITS);
-    // shader.stop();
     prepareShader(camera);
 
     for (auto &list : _entities) {
@@ -110,7 +102,6 @@ void IS::Entity3DRenderer::prepareTextureModel(TexturedModel texturedModel, Mesh
     glEnableVertexAttribArray(1);
     glEnableVertexAttribArray(2);
     glActiveTexture(GL_TEXTURE0);
-    // glBindTexture(GL_TEXTURE_2D, tex_output);
     sf::Texture::bind(texturedModel.getTexture());
     
     _shader.loadShineVariable(texturedModel.getShineDamper(), texturedModel.getReflectivity());

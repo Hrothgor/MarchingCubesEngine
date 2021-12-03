@@ -12,8 +12,8 @@
 
 class FastNoiseLite;
 namespace IS {
-    inline int chunkMax = 2;
-    inline int chunkSize = 10;
+    inline int chunkMax;
+    inline int chunkSize;
 
     class TexturedModel;
     class Entity;

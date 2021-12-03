@@ -23,7 +23,7 @@ namespace IS {
             void changePointValue(sf::Vector3f pos, float value);
 
             std::vector<ScalarPoint> getScalarPoints() const;
-            RawModel getModel() const;
+            RawModel &getModel();
             sf::Vector3f getCoord() const;
             int getSize() const;
 

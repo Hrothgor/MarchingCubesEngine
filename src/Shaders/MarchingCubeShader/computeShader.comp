@@ -1,6 +1,6 @@
 #version 430 core
 
-layout(local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
+layout(local_size_x = 4, local_size_y = 4, local_size_z = 4) in;
 
 // layout(rgba32f, binding = 0) uniform image2D img_output;
 
@@ -14,14 +14,15 @@ struct Triangle {
 	float memFillaD; // because vec2 in memory is a vec4
 };
 
-layout(std430, binding = 0) readonly buffer buffer_in {
+layout(binding = 0) readonly buffer buffer_in {
 	Triangle triangles[];
 } In;
 
-layout(std430, binding = 1) writeonly buffer buffer_out {
+layout(binding = 1) writeonly buffer buffer_out {
 	Triangle triangles[];
 } Out;
 
+layout(binding = 2, offset = 0) uniform atomic_uint numberOfVertices;
 
 #define PI 3.14159265359
 
@@ -129,22 +130,24 @@ float snoise(vec3 v)
                                     dot(p2,x2), dot(p3,x3) ) );
 }
 
+void createVertex(vec3 vec, const uint id){
+    // uint index = atomicCounterIncrement(numberOfVertices);
+
+	Out.triangles[id].pos = vec3(vec.x, 666.666, 666.666);
+	Out.triangles[id].normal = vec3(vec.y, 333.333, 333.333);
+	Out.triangles[id].id = ivec2(vec.z, 111.111);
+}
 
 void main() {
 	vec3 vec = gl_GlobalInvocationID.xyz;
-	const uint id = gl_GlobalInvocationID.z * gl_NumWorkGroups.y * gl_NumWorkGroups.x +
-					gl_GlobalInvocationID.y * gl_NumWorkGroups.x +
+	const uint id = gl_GlobalInvocationID.z * gl_NumWorkGroups.y * gl_WorkGroupSize.y * gl_NumWorkGroups.x * gl_WorkGroupSize.x +
+					gl_GlobalInvocationID.y * gl_NumWorkGroups.x * gl_WorkGroupSize.x +
 					gl_GlobalInvocationID.x;
-	
-	if (id >= 248 * 248 * 248) {
+
+
+	if (id >= 128 * 128 * 128) {
 		return;
 	}
 
-	Out.triangles[id].pos = vec3(In.triangles[id].pos.x * 2, 666.666, 666.666);
-	Out.triangles[id].normal = vec3(snoise(vec), 333.333, 333.333);
-	Out.triangles[id].id = ivec2(id / (248 * 248), 111.111);
-
-	// vec4 pixel = vec4(id.x & id.y, (id.x & 15)/15.0, (id.y & 15)/15.0, 1.0);
-
-	// imageStore(img_output, id, pixel);
-}
+	createVertex(vec, id);
+} 

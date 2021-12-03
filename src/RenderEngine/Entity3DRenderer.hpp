@@ -45,7 +45,8 @@ namespace IS {
             std::map<int, std::vector<Entity *>> _entities;
 
             GLuint tex_output;
-            GLint bufMask;
+            GLuint atomicsBuffer;
+            GLuint tmp;
             MarchingCubeShader shader;
     };
 }

@@ -130,7 +130,7 @@ void main(void)
         // 0 = flatUp, 0.5 = vertical, 1 = flatDown
         float steepNess = 1 - (dot(normalize(worldPosition.xyz - planetCenter), unitSurfaceNormal) * 0.5 + 0.5);
         vec3 color;
-        if (steepNess > 0.8) {
+        if (steepNess < 0.4) {
             color = vec3(0.4,0.6,0.0);
 	        color += vec3(snoise(worldPosition.xyz) * vec3(0.4,0.3,0.0));
         } else {

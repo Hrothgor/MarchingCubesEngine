@@ -30,6 +30,8 @@ std::string getConfigFromFile(const std::string &configFileName, const std::stri
 IS::Settings::Settings(const std::string &configFileName)
 {
     try {
+        IS::chunkMax = std::stoi(getConfigFromFile(configFileName, "chunkMax"));
+        IS::chunkSize = std::stoi(getConfigFromFile(configFileName, "chunkSize"));
     } catch (std::exception) {
         std::cout << "Error in config file" << std::endl;
         exit(84);

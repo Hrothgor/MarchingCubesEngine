@@ -23,7 +23,7 @@ void IS::Chunk::generateChunk()
 {
     if (_points.size() != 0) {
         _model = _MC.loadMarchingCubesModel(_points);
-        _model.changeAmbientColor(0, {1, 0.75, 0.80});
+        // _model.changeAmbientColor(0, {1, 0.75, 0.80});
     }
 }
 
@@ -42,7 +42,7 @@ std::vector<IS::ScalarPoint> IS::Chunk::getScalarPoints() const
     return (_points);
 }
 
-IS::RawModel IS::Chunk::getModel() const
+IS::RawModel &IS::Chunk::getModel()
 {
     return (_model);
 }

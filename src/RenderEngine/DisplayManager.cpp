@@ -69,17 +69,54 @@ void IS::DisplayManager::load()
 
     GLOBAL::_texturedModels["dragon"] = new TexturedModel("dragon");
 
-    GLOBAL::_entities.push_back(new Entity(*GLOBAL::_texturedModels["dragon"], { 0, 0, 0 }, { 0, 0, 0 }, 3));
+    // GLOBAL::_entities.push_back(new Entity(*GLOBAL::_texturedModels["dragon"], { 0, 0, 0 }, { 0, 0, 0 }, 3));
 
     sf::Clock clock;
-
+    int nb = 0;
+    int nb1 = 0;
     int textureSize = chunkMax * chunkSize;
     int planetSize = textureSize / 3;
+
+    // std::vector<IS::ScalarPoint> mcPoints;   
+    // for (int i = 0; i < chunkMax; i++) {
+    //     for (int j = 0; j < chunkMax; j++) {
+    //         for (int k = 0; k < chunkMax; k++) {
+
+    //             for(float x=0; x < chunkSize; x++)
+    //                 for(float y=0; y < chunkSize; y++)
+    //                     for(float z=0; z < chunkSize; z++) {
+    //                         IS::ScalarPoint vert;
+    //                         vert.pos = {x, y, z};
+    //                         sf::Vector3f worldPos = {vert.pos.x, vert.pos.y, vert.pos.z};
+    //                         if (worldPos.x == 0 || worldPos.y == 0 || worldPos.z == 0 ||
+    //                             worldPos.x == textureSize || worldPos.y == textureSize || worldPos.z == textureSize) {
+    //                             vert.value = 1;
+    //                             mcPoints.push_back(vert);
+    //                             continue;
+    //                         }
+    //                         float distance = sqrt((worldPos.x - (textureSize / 2 - 1))*(worldPos.x - (textureSize / 2 - 1)) + (worldPos.y - (textureSize / 2 - 1))*(worldPos.y - (textureSize / 2 - 1)) + (worldPos.z - (textureSize / 2 - 1))*(worldPos.z - (textureSize / 2 - 1)));
+    //                         float mapValue = distance - planetSize;
+                            
+    //                         float freq = 3;
+    //                         float amplitude = 30;
+
+    //                         for (int i = 0; i < 6; i++) {
+    //                             mapValue += GLOBAL::_noise->GetNoise(worldPos.x * freq, worldPos.y * freq, worldPos.z * freq) * amplitude;
+    //                             amplitude *= 0.5;
+    //                             freq *= 2;
+    //                         }
+
+    //                         vert.value = mapValue;
+    //                         mcPoints.push_back(vert);
+    //                     }
+    //         }
+    //     }
+    // }
 
     for (int i = 0; i < chunkMax; i++) {
         for (int j = 0; j < chunkMax; j++) {
             for (int k = 0; k < chunkMax; k++) {
-                std::vector<IS::ScalarPoint> mcPoints;   
+                std::vector<IS::ScalarPoint> mcPoints; 
                 sf::Vector3f coord(i * chunkSize, j * chunkSize, k * chunkSize);
                 Chunk *chunk = new Chunk(coord, chunkSize + 1);
                 for(float x=0; x < chunkSize + 1; x++)
@@ -116,7 +153,7 @@ void IS::DisplayManager::load()
         }
     }
     sf::Time elapsed = clock.getElapsedTime();
-    std::cout << elapsed.asSeconds() << std::endl;
+    std::cout << "Normal: " << elapsed.asSeconds() << std::endl;
 }
 
 void IS::DisplayManager::run()
@@ -153,7 +190,6 @@ void IS::DisplayManager::run()
 
         ray.update(_window);
         if (ray.intersect()) {
-            // GLOBAL::_entities[0]->setPosition(ray.getCurrentIntersectPoint());
             terraform.setBrushCenter(ray.getCurrentIntersectPoint());
         }
         if (_keysSmooth[Input::LMouse]) {
@@ -178,7 +214,7 @@ void IS::DisplayManager::run()
             text.setString(std::to_string(framerate));
             nbFrame = 0;
         }
-        _window->draw(text);
+        // _window->draw(text);
 
         _window->popGLStates();
         ////////////
