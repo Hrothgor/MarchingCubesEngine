@@ -22,39 +22,6 @@ IS::Entity3DRenderer::Entity3DRenderer()
     _shader.start();
     _shader.loadProjectionMatrix(Maths::createProjectionMatrix().getMatrix());
     _shader.stop();
-
-    shader.start();
-    std::vector<Triangle> data;
-    for (int i = 0; i < 128 * 128 * 128; i++)
-        data.push_back({{100,0,0}, 0, {0,0,0}, 0, {0,0}, 0, 0});
-    sf::Clock clock;
-    glGenBuffers(1, &atomicsBuffer);
-    glBindBufferBase(GL_ATOMIC_COUNTER_BUFFER, 2, atomicsBuffer);
-    glBufferData(GL_ATOMIC_COUNTER_BUFFER, sizeof(GLuint), NULL, GL_DYNAMIC_DRAW);
-    glGenBuffers(1, &tmp);
-    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, tmp);
-    glBufferData(GL_SHADER_STORAGE_BUFFER, 128 * 128 * 128 * sizeof(Triangle), NULL, GL_DYNAMIC_DRAW);
-    glGenBuffers(1, &tex_output);
-    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, tex_output);
-    glBufferData(GL_SHADER_STORAGE_BUFFER, 128 * 128 * 128 * sizeof(Triangle), NULL, GL_DYNAMIC_DRAW);
-
-    shader.dispatch(128/4, 128/4, 128/4);
-    glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
-    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, 0);
-
-    glBindBuffer(GL_SHADER_STORAGE_BUFFER, tex_output);
-    Triangle *returnArray = (Triangle *)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, 128 * 128 * 128 * sizeof(Triangle), GL_MAP_READ_BIT);
-    glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
-    glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-    
-    glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, atomicsBuffer);
-    GLuint *userCounters = (GLuint*)glMapBufferRange(GL_ATOMIC_COUNTER_BUFFER, 0, sizeof(GLuint), GL_MAP_READ_BIT);
-    glUnmapBuffer(GL_ATOMIC_COUNTER_BUFFER);
-    glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-
-    sf::Time elapsed = clock.getElapsedTime();
-    std::cout << "Compute shader: " << elapsed.asSeconds() << std::endl;
-    shader.stop();
 }
 
 IS::Entity3DRenderer::~Entity3DRenderer()

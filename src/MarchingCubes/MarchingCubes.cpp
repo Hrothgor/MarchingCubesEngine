@@ -31,10 +31,13 @@ int IS::MarchingCubes::indexFromCoord(sf::Vector3f coord)
 sf::Vector3f IS::MarchingCubes::LinearInterp(IS::ScalarPoint p1, IS::ScalarPoint p2, float value)
 {
     sf::Vector3f p;
-    if (p1.value != p2.value)
-        p = p1.pos + (p2.pos - p1.pos) / (p2.value - p1.value) * (value - p1.value);
-    else 
-        p = p1.pos;
+    p.x = (p1.pos.x + p2.pos.x) / 2;
+    p.y = (p1.pos.y + p2.pos.y) / 2;
+    p.z = (p1.pos.z + p2.pos.z) / 2;
+    // if (p1.value != p2.value)
+    //     p = p1.pos + (p2.pos - p1.pos) / (p2.value - p1.value) * (value - p1.value);
+    // else 
+    //     p = p1.pos;
     return p;
 }
 

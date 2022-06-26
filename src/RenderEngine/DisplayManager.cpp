@@ -64,12 +64,11 @@ void IS::DisplayManager::load()
 
     GLOBAL::_noise = new FastNoiseLite;
     GLOBAL::_noise->SetNoiseType(FastNoiseLite::NoiseType::NoiseType_Perlin);
-    GLOBAL::_noise->SetFrequency(0.01);
+    GLOBAL::_noise->SetFrequency(0.02);
     GLOBAL::_noise->SetSeed(rand());
 
     GLOBAL::_texturedModels["dragon"] = new TexturedModel("dragon");
 
-    // GLOBAL::_entities.push_back(new Entity(*GLOBAL::_texturedModels["dragon"], { 0, 0, 0 }, { 0, 0, 0 }, 3));
 
     sf::Clock clock;
     int nb = 0;
@@ -77,38 +76,25 @@ void IS::DisplayManager::load()
     int textureSize = chunkMax * chunkSize;
     int planetSize = textureSize / 3;
 
-    // std::vector<IS::ScalarPoint> mcPoints;   
     // for (int i = 0; i < chunkMax; i++) {
     //     for (int j = 0; j < chunkMax; j++) {
     //         for (int k = 0; k < chunkMax; k++) {
-
-    //             for(float x=0; x < chunkSize; x++)
-    //                 for(float y=0; y < chunkSize; y++)
-    //                     for(float z=0; z < chunkSize; z++) {
+    //             std::vector<IS::ScalarPoint> mcPoints;
+    //             sf::Vector3f coord(i * chunkSize, j * chunkSize, k * chunkSize);
+    //             Chunk *chunk = new Chunk(coord, chunkSize + 1);
+    //             for(float x=0; x < chunkSize + 1; x++)
+    //                 for(float y=0; y < chunkSize + 1; y++)
+    //                     for(float z=0; z < chunkSize + 1; z++) {
     //                         IS::ScalarPoint vert;
     //                         vert.pos = {x, y, z};
-    //                         sf::Vector3f worldPos = {vert.pos.x, vert.pos.y, vert.pos.z};
-    //                         if (worldPos.x == 0 || worldPos.y == 0 || worldPos.z == 0 ||
-    //                             worldPos.x == textureSize || worldPos.y == textureSize || worldPos.z == textureSize) {
-    //                             vert.value = 1;
-    //                             mcPoints.push_back(vert);
-    //                             continue;
-    //                         }
+    //                         sf::Vector3f worldPos = {vert.pos.x + coord.x, vert.pos.y + coord.y, vert.pos.z + coord.z};
     //                         float distance = sqrt((worldPos.x - (textureSize / 2 - 1))*(worldPos.x - (textureSize / 2 - 1)) + (worldPos.y - (textureSize / 2 - 1))*(worldPos.y - (textureSize / 2 - 1)) + (worldPos.z - (textureSize / 2 - 1))*(worldPos.z - (textureSize / 2 - 1)));
-    //                         float mapValue = distance - planetSize;
-                            
-    //                         float freq = 3;
-    //                         float amplitude = 30;
-
-    //                         for (int i = 0; i < 6; i++) {
-    //                             mapValue += GLOBAL::_noise->GetNoise(worldPos.x * freq, worldPos.y * freq, worldPos.z * freq) * amplitude;
-    //                             amplitude *= 0.5;
-    //                             freq *= 2;
-    //                         }
-
-    //                         vert.value = mapValue;
+    //                         vert.value = (textureSize / 2) - (textureSize / 10) - distance;
     //                         mcPoints.push_back(vert);
-    //                     }
+    //             }
+    //             chunk->setScalarPoints(mcPoints);
+    //             chunk->generateChunk();
+    //             GLOBAL::_chunks.push_back(chunk);
     //         }
     //     }
     // }
